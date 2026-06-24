@@ -35,6 +35,24 @@ app.delete("/users", (req, res) =>{
     res.send("<h1>Users deleted</h1>");
 });
 
+//! CRUD products
+
+app.get("/products", (req, res) =>{
+    res.send("<h1>All products</h1>");
+});
+
+app.post("/products", (req, res) =>{
+    res.send("<h1>Products created</h1>");
+});
+
+app.put("/products", (req, res) =>{
+    res.send("<h1>Products updated</h1>");
+});
+
+app.delete("/products", (req, res) =>{
+    res.send("<h1>Products deleted</h1>");
+});
+
 //
 server.listen(8080, "localhost", ()=>{
     //127.0.0.1- localhost
