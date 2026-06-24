@@ -14,9 +14,25 @@ app.get("/", (req, res) => {
     res.send("<h1>Home page</h1>");
 });
 
+//! CRUD users
 //* get all users
 app.get("/users", (req, res) =>{
     res.send("<h1>Users Page</h1>");
+});
+
+//* create
+app.post("/users", (req, res) =>{
+    res.send("<h1>Users created</h1>");
+});
+
+//* update
+app.put("/users", (req, res) =>{
+    res.send("<h1>Users updated</h1>");
+});
+
+//* delete
+app.delete("/users", (req, res) =>{
+    res.send("<h1>Users deleted</h1>");
 });
 
 //
