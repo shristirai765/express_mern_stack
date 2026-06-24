@@ -1,6 +1,7 @@
 import http from "http";
 import express from "express";
 
+// send - express method 
 //* creating express app instance
 const app = express();
 
@@ -17,22 +18,63 @@ app.get("/", (req, res) => {
 //! CRUD users
 //* get all users
 app.get("/users", (req, res) =>{
-    res.send("<h1>Users Page</h1>");
+    // res.send("<h1>Users Page</h1>");
+    res.json({
+        message : "all users",
+        success: true,
+        data:[{
+            _id: 1,
+            name: "John Doe",
+            email: "j@gmail.com"
+
+        },
+        {
+            _id: 2,
+            name: "John",
+            email: "jj@gmail.com"
+        }
+    ]
+    });
 });
 
 //* create
 app.post("/users", (req, res) =>{
-    res.send("<h1>Users created</h1>");
+    // res.send("<h1>Users created</h1>");
+    res.json({
+        message : "user created",
+        success: true,
+        data:{
+            _id: 3,
+            name: "Lucy",
+            email: "l@gmail.com"
+
+        }
+    });
 });
 
 //* update
 app.put("/users", (req, res) =>{
-    res.send("<h1>Users updated</h1>");
+    // res.send("<h1>Users updated</h1>");
+    res.json({
+        message : "user updated",
+        success: true,
+        data:{
+            _id: 1,
+            name: "John Doe update",
+            email: "j@gmail.com"
+
+        }
+    });
 });
 
 //* delete
 app.delete("/users", (req, res) =>{
-    res.send("<h1>Users deleted</h1>");
+    // res.send("<h1>Users deleted</h1>");
+    res.json({
+        message : "user deleted",
+        success: true,
+        data: null
+    });
 });
 
 //! CRUD products
