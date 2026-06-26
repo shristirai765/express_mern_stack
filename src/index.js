@@ -1,12 +1,13 @@
 import http from "http";
 import express from "express";
+import userRoutes from "./routes/user.routes.js";
+import productRoutes from "./routes/product.routes.js";
+
+//router - same work in modular level given by express
 
 // send - express method 
 //* creating express app instance
 const app = express();
-
-const users = [];
-const products = [];
 
 //* creating http server
 const server = http.createServer(app);
@@ -17,238 +18,21 @@ app.use(express.json()); // parses the json data into object and attach it into 
 //* home  -> get, / => homepage
 // app.get(path, handler);
 app.get("/", (req, res) => {
-    res.send("<h1>Home page</h1>");
-});
-
-//! CRUD users
-//* get all users
-app.get("/users", (req, res) =>{
-    // res.send("<h1>Users Page</h1>");
-    // const query = req.query;
-    // console.log(query);
-    res.json({
-        message : "all users fetched",
-        success: true,
-        data: users,
+    // res.send("<h1>Home page</h1>");
+    res.status(200).json({
+        message : "server is up and running",
     });
 });
 
-//* get by id
-//? routes param - users/:id/:postid
-//? for dynamic -> : (colon)
+//! using route
 
-// /users/12 => {id: 12}
-// /users/1 => {id: 1}
+app.use("/users", userRoutes);
 
-app.get("/users/:id", (req, res) =>{
-    // res.send("<h1>Users Page</h1>");
-    // req.params => {id: 123}
-    // console.log(req.params);
-    // /post/:userId/:postId => /post/1/2 {userId:1, postId:2}
-
-    const {id} = req.params;
-
-    const user = users.find((user)=> user._id === Number(id));
-
-    if(!user){
-        res.json({
-            message : `user not found `,
-            success: false,
-            data: null
-        });
-        return;
-    }
-    res.json({
-            message : `user fetched by {id} `,
-            success: true,
-            data: users
-        });
+app.use("/products", productRoutes);
 
 
-});
 
-//* create
-app.post("/users", (req, res) =>{
-    // res.send("<h1>Users created</h1>");
-    // console.log(req.body);
 
-    const {name, email, password} = req.body;
-    users.push({
-        name,
-        email,
-        password,
-        createdAt: Date.now(),
-        _id: users.length + 1 ,
-    })
-    res.json({
-        message : "user created",
-        success: true,
-        data: users[users.length-1]
-    });
-});
-
-//* update
-app.put("/users/:id", (req, res) =>{
-    // res.send("<h1>Users updated</h1>");
-
-    const {id} = req.params;
-
-    const {name, email, password} = req.body;
-    
-    const index = users.findIndex((user)=> user._id === Number(id));
-
-    if(index === -1){
-        res.json({
-            message: "user not found",
-            success: "false",
-            data: null
-        });
-        return;
-    }
-
-    users[index] = {
-        ...users[index],
-        name,
-        email,
-        password
-    };
-    res.json({
-        message : "user updated",
-        success: true,
-        data: users[index]
-    });
-});
-
-//* delete
-app.delete("/users/:id", (req, res) =>{
-    // res.send("<h1>Users deleted</h1>");
-
-    const id = req.params.id;
-
-    const index = users.findIndex((user)=> user._id === Number(id));
-
-    if(index === -1){
-        res.json({
-            message: "user not found",
-            success: false,
-            data: null
-        });
-        return;
-    }
-    users.splice(index, 1);
-    res.json({
-        message : "user deleted",
-        success: true,
-        data: null
-    });
-});
-
-//! CRUD products
-//* get all 
-app.get("/products", (req, res) =>{
-    // res.send("<h1>All products</h1>");
-    res.json({
-        message : "all products",
-        success: true,
-        data: products,
-    });
-});
-
-//* get by id
-app.get("/products/:id", (req, res) =>{
-    // res.send("<h1>All products</h1>");
-
-    const {id} = req.params;
-    const product = products.find((product)=> product._id === Number(id));
-
-    if(!product){
-        res.json({
-            message : `product not found `,
-            success: false,
-            data: null
-        });
-        return;
-    }
-    res.json({
-            message : `product fetched by {id} `,
-            success: true,
-            data: products
-        });
-    
-});
-
-app.post("/products", (req, res) =>{
-    // res.send("<h1>Products created</h1>");
-    const {name, brand, price} = req.body;
-    products.push({
-        name,
-        brand,
-        price,
-        createdAt: new Date(Date.now()),
-        _id: products.length+1,
-
-    })
-    res.json({
-        message : "products created",
-        success: true,
-        data:products[products.length-1]
-    });
-});
-
-app.put("/products/:id", (req, res) =>{
-    // res.send("<h1>Products updated</h1>");
-    const {id} = req.params;
-    console.log(id)
-
-    const {name, brand, price} = req.body;
-    
-    const index = products.findIndex((product)=>product._id=== Number(id));
-    console.log(index);
-
-    if(index === -1){
-        res.json({
-            message: "product not found",
-            success: "false",
-            data: null
-        });
-        return;
-    }
-
-    products[index]={
-        ...products[index],
-        name,
-        brand,
-        price
-    };
-    res.json({
-        message : "products updated",
-        success: true,
-        data: products[index]
-    });
-});
-
-app.delete("/products/:id", (req, res) =>{
-    // res.send("<h1>Products deleted</h1>");
-
-    const {id} = req.params;
-
-    const index = products.findIndex((product)=>product._id === Number(id));
-
-    if(index === -1){
-        res.json({
-            message: "product not found",
-            success: false,
-            data: null
-        });
-        return;
-    }
-    products.splice(index,1);
-    res.json({
-        message : "products deleted",
-        success: true,
-        data: null
-    });
-});
 
 //
 server.listen(8080, "localhost", ()=>{
@@ -277,3 +61,54 @@ server.listen(8080, "localhost", ()=>{
 // req.query ->{name:"John",page=1&limit=10}
 //? ? paxi, & separator
 //req.body -> {}
+
+//* REST API - set of rules
+//? REST - Representational state transfer
+
+//? api - application programming interface
+
+
+//? constraints
+//* stateless - no management of state in server side 
+// when logged in gives a token with login response and user use it as a way to certify the authorization next time
+//* client - server architecture
+// client - cdn, proxy server, loadbalance, ...- server architecture
+// proxy : 
+//* layered architecture
+//* cacheable response
+// Cache- Control
+
+// code on demand 
+
+//* uniform interface
+// route naming
+// use noun
+// plural
+// get / getusers === !
+// use meaningful http methods -> GET, POST, PUT, PATCH, DELETE
+// use meaningful response status code ->
+//? 100 - 199 -> informational
+//? 200 - 299 -> successful range 
+// 200 -> success , 
+// 201 -> created (put , post)
+//? 300 - 399 -> redirectional
+//? 400 - 499 -> client side error .. 404
+// 400 -> bad request, 
+// 401 -> unauthorized 
+// 403 -> foribidden 
+// 404 -> not found
+//? 500 - 599 -> server side error 
+// 500 -> internal server error 
+// 502 -: bad gateway
+
+
+
+//! endpoint - path 
+//* get /users
+
+//! resource
+// obj using endpoint can identify
+
+// /dashboard -> {}
+// resource lai kun chai format use/ representation garera send garne
+// /users -> json, html, xml
