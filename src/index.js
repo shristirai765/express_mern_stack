@@ -61,7 +61,7 @@ app.get("/users/:id", (req, res) =>{
     res.json({
             message : `user fetched by {id} `,
             success: true,
-            data: user
+            data: users
         });
 
 
@@ -172,7 +172,7 @@ app.get("/products/:id", (req, res) =>{
     res.json({
             message : `product fetched by {id} `,
             success: true,
-            data: product
+            data: products
         });
     
 });
@@ -229,6 +229,20 @@ app.put("/products/:id", (req, res) =>{
 
 app.delete("/products/:id", (req, res) =>{
     // res.send("<h1>Products deleted</h1>");
+
+    const {id} = req.params;
+
+    const index = products.findIndex((product)=>product._id === Number(id));
+
+    if(index === -1){
+        res.json({
+            message: "product not found",
+            success: false,
+            data: null
+        });
+        return;
+    }
+    products.splice(index,1);
     res.json({
         message : "products deleted",
         success: true,
