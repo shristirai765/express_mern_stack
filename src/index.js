@@ -31,9 +31,6 @@ app.use("/users", userRoutes);
 app.use("/products", productRoutes);
 
 
-
-
-
 //
 server.listen(8080, "localhost", ()=>{
     //127.0.0.1- localhost

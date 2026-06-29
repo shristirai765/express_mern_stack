@@ -3,10 +3,7 @@ import express from 'express';
 const router = express.Router();
 
 const users = [];
-
-//! CRUD users
-//* get all users
-router.get("/", (req, res) =>{
+const getAll = (req, res) =>{
     // res.send("<h1>Users Page</h1>");
     // const query = req.query;
     // console.log(query);
@@ -15,16 +12,9 @@ router.get("/", (req, res) =>{
         success: true,
         data: users,
     });
-});
+}
 
-//* get by id
-//? routes param - users/:id/:postid
-//? for dynamic -> : (colon)
-
-// /users/12 => {id: 12}
-// /users/1 => {id: 1}
-
-router.get("/:id", (req, res) =>{
+const getById =  (req, res) =>{
     // res.send("<h1>Users Page</h1>");
     // req.params => {id: 123}
     // console.log(req.params);
@@ -49,7 +39,19 @@ router.get("/:id", (req, res) =>{
         });
 
 
-});
+};
+//! CRUD users
+//* get all users
+router.get("/", getAll);
+
+//* get by id
+//? routes param - users/:id/:postid
+//? for dynamic -> : (colon)
+
+// /users/12 => {id: 12}
+// /users/1 => {id: 1}
+
+router.get("/:id",getById);
 
 //* create
 router.post("/", (req, res) =>{
