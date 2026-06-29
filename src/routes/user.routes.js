@@ -3,7 +3,6 @@ import { getAll, getById, create, update, del } from '../controllers/user.conrol
 
 const router = express.Router();
 
-const users = [];
 
 //! CRUD users
 //* get all users

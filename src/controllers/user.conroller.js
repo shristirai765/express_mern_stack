@@ -1,3 +1,6 @@
+
+const users = [];
+
 export const getAll = (req, res) =>{
     // res.send("<h1>Users Page</h1>");
     // const query = req.query;
