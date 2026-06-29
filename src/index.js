@@ -2,6 +2,7 @@ import http from "http";
 import express from "express";
 import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
 
 //router - same work in modular level given by express
 
@@ -29,6 +30,9 @@ app.get("/", (req, res) => {
 app.use("/users", userRoutes);
 
 app.use("/products", productRoutes);
+
+app.use("/categories", categoryRoutes);
+
 
 
 //

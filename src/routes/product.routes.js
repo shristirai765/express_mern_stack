@@ -1,5 +1,11 @@
 import express from 'express';
-import { getAll, getById, create, update, remove } from '../controllers/user.conroller.js';
+import {
+     getAll,
+     getById, 
+     create, 
+     update, 
+     remove 
+    } from '../controllers/product.controller.js';
 
 const router = express.Router();
 
@@ -11,7 +17,7 @@ router.get("/", getAll);
 //* get by id
 router.get("/:id",getById);
 
-router.post("/", );
+router.post("/", create);
 
 router.put("/:id",update);
 

@@ -1,5 +1,11 @@
 import express from 'express';
-import { getAll, getById, create, update, del } from '../controllers/user.conroller.js';
+import {
+ getAll, 
+ getById,
+ create,
+ update,
+ del 
+} from '../controllers/user.conroller.js';
 
 const router = express.Router();
 
