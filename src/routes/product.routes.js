@@ -9,10 +9,14 @@ import {
 
 const router = express.Router();
 
+const mid = (req, res, next)=>{
+    console.log("get all products mid");
+    next();
+}
 
 //! CRUD products
 //* get all 
-router.get("/", getAll);
+router.get("/", mid, mid, getAll);
 
 //* get by id
 router.get("/:id",getById);

@@ -11,7 +11,37 @@ import categoryRoutes from "./routes/category.routes.js";
 const app = express();
 
 //* creating http server
-const server = http.createServer(app);
+const server = http.createServer(app)
+
+const middleware = (req, res, next)=>{
+    console.log("middleware 1");
+    next();
+};
+
+//! using middleware
+
+app.use(middleware);
+app.use((req, res, next)=>{
+    console.log("middleware 2");
+    req.user = {
+        name: "John Doe"
+    }
+    next();
+});
+
+app.use((req, res, next)=>{
+    console.log("middleware 3");
+    console.log(req.user);
+    if(req.user){
+        req.user = null;
+        next();
+    }else{
+        res.status(401).json({
+        message: "unauthorized access denied",
+    });
+    }
+});
+
 
 app.use(express.json()); // parses the json data into object and attach it into the req body
 //? or to read data of request body
@@ -40,6 +70,15 @@ server.listen(8080, "localhost", ()=>{
     //127.0.0.1- localhost
     console.log(`server is running at http://localhost:8080`); //ip address + port
     console.log("press ctrl+c to close the server");
+});
+
+app.use((err, req, res, next)=>{
+    console.log(err);
+    res.status(err?.statusCode ?? 500).json({
+        message: err?.message ?? "something went wrong",
+        success: false,
+        data: null,
+    });
 });
 
 //? expressJs / nestjs
@@ -113,3 +152,27 @@ server.listen(8080, "localhost", ()=>{
 // /dashboard -> {}
 // resource lai kun chai format use/ representation garera send garne
 // /users -> json, html, xml
+
+
+//* middleware
+//? is a function execute between req-res cycle
+//? 1. has access to req obj, res obj, & next function
+//? 2. can execute own logic
+//? 3. can modify req & res object
+//? 4. can end req-res cycle
+
+//? if any logic euta vanda badi repeat vako xa vane in api (controller)
+//? then it is implemented using middleware
+
+//* types of middlewares
+//* custom middleware
+//? 1. application level middleware (every req ma impl attach to app
+//? 2. route level middleware- kunai euta route ma matra
+//? 3. error handler middleware- error handle in global level
+// (err, req, res, next)=>{}
+//? automatically next ma pass hudeina 
+//? orderly pass cannot skip mid1 -> mid2
+// req -> mid1 -> mid2 -> mid3 -> midn -> controller
+//* third-party middleware - (multer) 
+
+//* mongodb

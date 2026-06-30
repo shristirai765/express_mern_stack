@@ -12,7 +12,7 @@ export const getAll = (req, res) =>{
     });
 }
 
-export const getById =  (req, res) =>{
+export const getById =  (req, res, next) =>{
     // res.send("<h1>Users Page</h1>");
     // req.params => {id: 123}
     // console.log(req.params);
@@ -23,10 +23,14 @@ export const getById =  (req, res) =>{
     const user = users.find((user)=> user._id === Number(id));
 
     if(!user){
-        res.status(404).json({
+        // res.status(404).json({
+        //     message : `user not found `,
+        //     success: false,
+        //     data: null
+        // });
+        next({
             message : `user not found `,
-            success: false,
-            data: null
+            statusCode: 404
         });
         return;
     }

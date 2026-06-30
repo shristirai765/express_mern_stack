@@ -4,6 +4,8 @@ const products = [];
 
 export const getAll = (req, res) =>{
     // res.send("<h1>All products</h1>");
+    console.log("get all product");
+    console.log(req.user);
     res.status(200).json({
         message : "all products",
         success: true,
@@ -36,6 +38,8 @@ export const getById =  (req, res) =>{
 
 export const create = (req, res) =>{
     // res.send("<h1>Products created</h1>");
+    //! check authentication
+    //! authorize
     const {name, brand, price} = req.body;
     products.push({
         name,
