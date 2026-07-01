@@ -1,6 +1,6 @@
 import mongoose, { connect } from "mongoose";
 
-const users = [];
+// const users = [];
 
 //! user schema
 const userSchema = new mongoose.Schema({
@@ -98,13 +98,15 @@ export const create = async (req, res, next) =>{
             next({
                 message: "email required",
                 statusCode: 400
-            })
+            });
+            return;
         }
         if(!password){
             next({
                 message: "password required",
                 statusCode: 400
-            })
+            });
+            return;
         }
         const newUser = await User.create({name,email, password});
         // users.push({

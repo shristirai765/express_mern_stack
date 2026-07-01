@@ -1,145 +1,199 @@
+import mongoose from "mongoose";
 
-const products = [];
+// const products = [];
+
+//! product schema
+const productSchema = new mongoose.Schema({
+    name:{
+        type: String,
+        required: true,
+        minLength: 3,
+    },
+    brand:{
+        type: String,
+        required: true,
+    },
+    price:{
+        type: Number,
+        required: true,
+    }
+},{timestamps: true});
+
+//! creating product model (reference for crud too)
+const Product = mongoose.model("product", productSchema);
 
 
-export const getAll = (req, res) =>{
+export const getAll = async (req, res, next) =>{
     // res.send("<h1>All products</h1>");
-    console.log("get all product");
-    console.log(req.user);
-    res.status(200).json({
-        message : "all products",
-        success: true,
-        data: products,
+    try{
+        console.log("get all product");
+        console.log(req.user);
+
+        const product = await Product.find({});
+
+        res.status(200).json({
+            message : "all products",
+            success: true,
+            data: products,
     });
+    }catch(error){
+        next(error);
+    }
 };
 
-export const getById =  (req, res, next) =>{
+export const getById = async (req, res, next) =>{
     // res.send("<h1>All products</h1>");
 
-    const {id} = req.params;
-    const product = products.find((product)=> product._id === Number(id));
+    try{
+        const {id} = req.params;
+        // const product = products.find((product)=> product._id === Number(id));
 
-    if(!product){
-        // res.status(404).json({
-        //     message : `product not found `,
-        //     success: false,
-        //     data: null
-        // });
-        // return;
-        next({
-            message : `product not found `,
-            statusCode: 404
-        });
+        const product = await Product.findOne({_id: id})
+
+        if(!product){
+            // res.status(404).json({
+            //     message : `product not found `,
+            //     success: false,
+            //     data: null
+            // });
+            // return;
+            next({
+                message : `product not found `,
+                statusCode: 404
+            });
+        }
+        res.status(200).json({
+                message : `product fetched by {id} `,
+                success: true,
+                data: products
+            });
+    }catch(error){
+        next(error);
     }
-    res.status(200).json({
-            message : `product fetched by {id} `,
-            success: true,
-            data: products
-        });
     
 };
 
 
-export const create = (req, res, next) =>{
+export const create = async (req, res, next) =>{
     // res.send("<h1>Products created</h1>");
     //! check authentication
     //! authorize
-    const {name, brand, price} = req.body;
-    if(!name){
-        next({
-            message: "name required",
-            statusCode: 400
-        })
-    }
-    if(!brand){
-        next({
-            message: "brand required",
-            statusCode: 400
-        })
-    }
-    if(!price){
-        next({
-            message: "price required",
-            statusCode: 400
-        })
-    }
-    products.push({
-        name,
-        brand,
-        price,
-        createdAt: new Date(Date.now()),
-        _id: products.length+1,
+    try{
+        const {name, brand, price} = req.body;
+        if(!name){
+            next({
+                message: "name required",
+                statusCode: 400
+            });
+            return;
+        }
+        if(!brand){
+            next({
+                message: "brand required",
+                statusCode: 400
+            });
+            return;
+        }
+        if(!price){
+            next({
+                message: "price required",
+                statusCode: 400
+            });
+            return;
+        }
 
-    })
+        const NewProduct = await Product.create({name, brand, price});
+        // products.push({
+        //     name,
+        //     brand,
+        //     price,
+        //     createdAt: new Date(Date.now()),
+        //     _id: products.length+1,
 
-    res.status(201).json({
-        message : "products created",
-        success: true,
-        data:products[products.length-1]
-    });
+        // })
+
+        res.status(201).json({
+            message : "products created",
+            success: true,
+            data: NewProduct
+        });
+    }catch(error){
+        next(error);
+    }
 };
 
 
-export const update =  (req, res, next) =>{
+export const update = async (req, res, next) =>{
     // res.send("<h1>Products updated</h1>");
-    const {id} = req.params;
-    console.log(id)
+    try{
+        const {id} = req.params;
+        // console.log(id)
 
-    const {name, brand, price} = req.body;
-    
-    const index = products.findIndex((product)=>product._id=== Number(id));
-    console.log(index);
+        const {name, brand, price} = req.body;
+        
+        // const index = products.findIndex((product)=>product._id=== Number(id));
+        const updatedProduct = await Product.findByIdAndUpdate({_id: id}, {name, brand, price});
 
-    if(index === -1){
-        // res.status(404).json({
-        //     message: "product not found",
-        //     success: "false",
-        //     data: null
-        // });
-        // return;
-        next({
-            message: "product not found",
-            statusCode: 404
-        })
+        if(!updatedProduct){
+            // res.status(404).json({
+            //     message: "product not found",
+            //     success: "false",
+            //     data: null
+            // });
+            // return;
+            next({
+                message: "product not found",
+                statusCode: 404
+            });
+            return;
+        }
+
+        // products[index]={
+        //     ...products[index],
+        //     name,
+        //     brand,
+        //     price
+        // };
+        res.status(200).json({
+            message : "products updated",
+            success: true,
+            data: updatedProduct,
+        });
+    }catch(error){
+        next(error);
     }
-
-    products[index]={
-        ...products[index],
-        name,
-        brand,
-        price
-    };
-    res.status(200).json({
-        message : "products updated",
-        success: true,
-        data: products[index]
-    });
 };
 
 
-export const remove = (req, res, next) =>{
+export const remove = async (req, res, next) =>{
     // res.send("<h1>Products deleted</h1>");
 
-    const {id} = req.params;
+   try{
+        const {id} = req.params;
 
-    const index = products.findIndex((product)=>product._id === Number(id));
+        // const index = products.findIndex((product)=>product._id === Number(id));
+        const deletedProduct = await Product.findByIdAndDelete({_id: id});
 
-    if(index === -1){
-        // res.status(404).json({
-        //     message: "product not found",
-        //     success: false,
-        //     data: null
-        // });
-        // return;
-        next({
-            message: "product not found",
-            statusCode: 404
-        })
-    }
-    products.splice(index,1);
-    res.status(200).json({
-        message : "products deleted",
-        success: true,
-        data: null
-    });
+        if(!deletedProduct){
+            // res.status(404).json({
+            //     message: "product not found",
+            //     success: false,
+            //     data: null
+            // });
+            // return;
+            next({
+                message: "product not found",
+                statusCode: 404
+            });
+            return;
+        }
+        // products.splice(index,1);
+        res.status(200).json({
+            message : "products deleted",
+            success: true,
+            data: null
+        });
+   }catch(error){
+    next(error);
+   }
 };
