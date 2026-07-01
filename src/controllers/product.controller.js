@@ -13,19 +13,23 @@ export const getAll = (req, res) =>{
     });
 };
 
-export const getById =  (req, res) =>{
+export const getById =  (req, res, next) =>{
     // res.send("<h1>All products</h1>");
 
     const {id} = req.params;
     const product = products.find((product)=> product._id === Number(id));
 
     if(!product){
-        res.status(404).json({
+        // res.status(404).json({
+        //     message : `product not found `,
+        //     success: false,
+        //     data: null
+        // });
+        // return;
+        next({
             message : `product not found `,
-            success: false,
-            data: null
+            statusCode: 404
         });
-        return;
     }
     res.status(200).json({
             message : `product fetched by {id} `,
@@ -36,11 +40,29 @@ export const getById =  (req, res) =>{
 };
 
 
-export const create = (req, res) =>{
+export const create = (req, res, next) =>{
     // res.send("<h1>Products created</h1>");
     //! check authentication
     //! authorize
     const {name, brand, price} = req.body;
+    if(!name){
+        next({
+            message: "name required",
+            statusCode: 400
+        })
+    }
+    if(!brand){
+        next({
+            message: "brand required",
+            statusCode: 400
+        })
+    }
+    if(!price){
+        next({
+            message: "price required",
+            statusCode: 400
+        })
+    }
     products.push({
         name,
         brand,
@@ -49,6 +71,7 @@ export const create = (req, res) =>{
         _id: products.length+1,
 
     })
+
     res.status(201).json({
         message : "products created",
         success: true,
@@ -57,7 +80,7 @@ export const create = (req, res) =>{
 };
 
 
-export const update =  (req, res) =>{
+export const update =  (req, res, next) =>{
     // res.send("<h1>Products updated</h1>");
     const {id} = req.params;
     console.log(id)
@@ -68,12 +91,16 @@ export const update =  (req, res) =>{
     console.log(index);
 
     if(index === -1){
-        res.status(404).json({
+        // res.status(404).json({
+        //     message: "product not found",
+        //     success: "false",
+        //     data: null
+        // });
+        // return;
+        next({
             message: "product not found",
-            success: "false",
-            data: null
-        });
-        return;
+            statusCode: 404
+        })
     }
 
     products[index]={
@@ -90,7 +117,7 @@ export const update =  (req, res) =>{
 };
 
 
-export const remove = (req, res) =>{
+export const remove = (req, res, next) =>{
     // res.send("<h1>Products deleted</h1>");
 
     const {id} = req.params;
@@ -98,12 +125,16 @@ export const remove = (req, res) =>{
     const index = products.findIndex((product)=>product._id === Number(id));
 
     if(index === -1){
-        res.status(404).json({
+        // res.status(404).json({
+        //     message: "product not found",
+        //     success: false,
+        //     data: null
+        // });
+        // return;
+        next({
             message: "product not found",
-            success: false,
-            data: null
-        });
-        return;
+            statusCode: 404
+        })
     }
     products.splice(index,1);
     res.status(200).json({

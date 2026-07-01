@@ -30,8 +30,8 @@ app.use((req, res, next)=>{
 });
 
 app.use((req, res, next)=>{
-    console.log("middleware 3");
-    console.log(req.user);
+    // console.log("middleware 3");
+    // console.log(req.user);
     if(req.user){
         req.user = null;
         next();

@@ -32,7 +32,7 @@ export const getById =  (req, res, next) =>{
             message : `user not found `,
             statusCode: 404
         });
-        return;
+        // return;
     }
     res.status(200).json({
             message : `user fetched by {id} `,
@@ -43,11 +43,29 @@ export const getById =  (req, res, next) =>{
 
 };
 
-export const create = (req, res) =>{
+export const create = (req, res, next) =>{
     // res.send("<h1>Users created</h1>");
     // console.log(req.body);
 
     const {name, email, password} = req.body;
+    if(!name){
+        next({
+            message: "name required",
+            statusCode: 400
+        })
+    }
+    if(!email){
+        next({
+            message: "email required",
+            statusCode: 400
+        })
+    }
+    if(!password){
+        next({
+            message: "password required",
+            statusCode: 400
+        })
+    }
     users.push({
         name,
         email,
@@ -62,7 +80,7 @@ export const create = (req, res) =>{
     });
 };
 
-export const update =  (req, res) =>{
+export const update =  (req, res, next) =>{
     // res.send("<h1>Users updated</h1>");
 
     const {id} = req.params;
@@ -72,12 +90,16 @@ export const update =  (req, res) =>{
     const index = users.findIndex((user)=> user._id === Number(id));
 
     if(index === -1){
-        res.status(404).json({
-            message: "user not found",
-            success: "false",
-            data: null
+        // res.status(404).json({
+        //     message: "user not found",
+        //     success: "false",
+        //     data: null
+        // });
+        // return;
+        next({
+            message: " user not found",
+            statusCode: 404
         });
-        return;
     }
 
     users[index] = {
@@ -93,7 +115,7 @@ export const update =  (req, res) =>{
     });
 };
 
-export const del = (req, res) =>{
+export const del = (req, res, next) =>{
     // res.send("<h1>Users deleted</h1>");
 
     const id = req.params.id;
@@ -101,12 +123,16 @@ export const del = (req, res) =>{
     const index = users.findIndex((user)=> user._id === Number(id));
 
     if(index === -1){
-        res.status(404).json({
-            message: "user not found",
-            success: false,
-            data: null
+        // res.status(404).json({
+        //     message: "user not found",
+        //     success: false,
+        //     data: null
+        // });
+        // return;
+        next({
+            message: " user not found",
+            statusCode: 404
         });
-        return;
     }
     users.splice(index, 1);
     res.status(200).json({

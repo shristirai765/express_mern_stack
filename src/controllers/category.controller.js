@@ -10,18 +10,22 @@ export const getAll = (req,res)=>{
 }
 
 //* get by id
-export const getById = (req, res)=>{
+export const getById = (req, res, next)=>{
     const {id} = req.params;
 
     const category = categories.find((category)=>category._id === Number(id));
 
     if(!category){
-        res.status(404).json({
-            message: "Category not found",
-            success: false,
-            data: null
-        });
-        return;
+        // res.status(404).json({
+        //     message: "Category not found",
+        //     success: false,
+        //     data: null
+        // });
+        // return;
+        next({
+            message: "category not found",
+            statusCode: 404
+        })
     }
     res.status(200).json({
         message: "Category by id found",
@@ -30,8 +34,14 @@ export const getById = (req, res)=>{
     });
 };
  //* create
-export const create = (req, res)=>{
+export const create = (req, res, next)=>{
     const {name} = req.body;
+    if(!name){
+        next({
+            message: "name required",
+            statusCode: 400
+        })
+    }
 
     categories.push({
         name,
@@ -48,7 +58,7 @@ export const create = (req, res)=>{
 };
 
 //* update
-export const update =  (req, res) =>{
+export const update =  (req, res, next) =>{
     const {id} = req.params;
 
     const {name} = req.body;
@@ -56,12 +66,16 @@ export const update =  (req, res) =>{
     const index = categories.findIndex((category)=>category._id=== Number(id));
 
     if(index === -1){
-        res.status(404).json({
-            message: "category not found",
-            success: "false",
-            data: null
-        });
-        return;
+        // res.status(404).json({
+        //     message: "category not found",
+        //     success: "false",
+        //     data: null
+        // });
+        // return;
+        next({
+            message: " category not found",
+            statusCode: 404
+        })
     }
 
     categories[index]={
@@ -76,7 +90,7 @@ export const update =  (req, res) =>{
 };
 
 //* delete
-export const remove = (req, res) =>{
+export const remove = (req, res, next) =>{
     // res.send("<h1>Products deleted</h1>");
 
     const {id} = req.params;
@@ -84,12 +98,16 @@ export const remove = (req, res) =>{
     const index = categories.findIndex((category)=>category._id === Number(id));
 
     if(index === -1){
-        res.status(404).json({
-            message: "category not found",
-            success: false,
-            data: null
-        });
-        return;
+        // res.status(404).json({
+        //     message: "category not found",
+        //     success: false,
+        //     data: null
+        // });
+        // return;
+        next({
+            message: " category not found",
+            statusCode: 404
+        })
     }
     categories.splice(index,1);
     res.status(200).json({
