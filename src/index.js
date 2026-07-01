@@ -3,6 +3,7 @@ import express from "express";
 import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
+import {connectDatabase} from "./config/db.config.js";
 
 //router - same work in modular level given by express
 
@@ -11,7 +12,10 @@ import categoryRoutes from "./routes/category.routes.js";
 const app = express();
 
 //* creating http server
-const server = http.createServer(app)
+const server = http.createServer(app);
+
+//* connect database
+connectDatabase();
 
 const middleware = (req, res, next)=>{
     console.log("middleware 1");
@@ -176,3 +180,16 @@ app.use((err, req, res, next)=>{
 //* third-party middleware - (multer) 
 
 //* mongodb
+//? noSql database (unstructured)
+//? document format
+//? no normalization concept
+//? flexible 
+
+//!sql - tabular form
+
+//? terms (sql -> noSql)
+// database -> database
+// table -> collection
+// column -> field
+// row -> document
+// entity -> module/schema
