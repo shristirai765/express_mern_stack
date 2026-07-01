@@ -1,118 +1,163 @@
-const categories = [];
+import e from "express";
+import mongoose from "mongoose";
+
+// const categories = [];
+
+//* category schema
+const categorySchema = new mongoose.Schema({
+    name:{
+        type: String,
+        required: true,
+        minLength: 3,
+    }
+},{timestamps: true});
+
+//! creating category model (reference for crud too)
+const Category = mongoose.model("category", categorySchema);
 
 //* getAll
-export const getAll = (req,res)=>{
-    res.status(200).json({
-        message: "",
-        success: true,
-        data: categories
-    })
+export const getAll = async (req, res, next)=>{
+   try{
+        const category = await Category.find({});
+        res.status(200).json({
+            message: "",
+            success: true,
+            data: category
+        });
+   }catch(error){
+    next(error);
+   }
 }
 
 //* get by id
-export const getById = (req, res, next)=>{
-    const {id} = req.params;
+export const getById = async (req, res, next)=>{
+    try{
+        const {id} = req.params;
 
-    const category = categories.find((category)=>category._id === Number(id));
+        // const category = categories.find((category)=>category._id === Number(id));
+        const category = await Category.findOne({_id: id});
 
-    if(!category){
-        // res.status(404).json({
-        //     message: "Category not found",
-        //     success: false,
-        //     data: null
-        // });
-        // return;
-        next({
-            message: "category not found",
-            statusCode: 404
-        })
+        if(!category){
+            // res.status(404).json({
+            //     message: "Category not found",
+            //     success: false,
+            //     data: null
+            // });
+            // return;
+            next({
+                message: "category not found",
+                statusCode: 404
+            });
+            return;
+        }
+        res.status(200).json({
+            message: "Category by id found",
+            success: true,
+            data: category
+        });
+    }catch(error){
+        next(error);
     }
-    res.status(200).json({
-        message: "Category by id found",
-        success: true,
-        data: categories
-    });
 };
  //* create
-export const create = (req, res, next)=>{
-    const {name} = req.body;
-    if(!name){
-        next({
-            message: "name required",
-            statusCode: 400
-        })
+export const create = async (req, res, next)=>{
+    try{
+        const {name} = req.body;
+        if(!name){
+            next({
+                message: "name required",
+                statusCode: 400
+            });
+            return;
+        }
+
+        // categories.push({
+        //     name,
+        //     createdAt: new Date(Date.now()),
+        //     _id: categories.length+1,
+
+        // })
+        const newCategory = await Category.create({name});
+        res.status(201).json({
+            message : "products created",
+            success: true,
+            data: newCategory
+        });
+    }catch(error){
+        next(error);
     }
-
-    categories.push({
-        name,
-        createdAt: new Date(Date.now()),
-        _id: categories.length+1,
-
-    })
-    res.status(201).json({
-        message : "products created",
-        success: true,
-        data: categories[categories.length-1]
-    });
     
 };
 
 //* update
-export const update =  (req, res, next) =>{
-    const {id} = req.params;
+export const update = async (req, res, next) =>{
+    try{
+        const {id} = req.params;
 
-    const {name} = req.body;
-    
-    const index = categories.findIndex((category)=>category._id=== Number(id));
+        const {name} = req.body;
+        
+        // const index = categories.findIndex((category)=>category._id=== Number(id));
+        const updatedCategory = await Category.findByIdAndUpdate({_id: id}, {name});
 
-    if(index === -1){
-        // res.status(404).json({
-        //     message: "category not found",
-        //     success: "false",
-        //     data: null
-        // });
-        // return;
-        next({
-            message: " category not found",
-            statusCode: 404
-        })
+        if(!updatedCategory){
+            // res.status(404).json({
+            //     message: "category not found",
+            //     success: "false",
+            //     data: null
+            // });
+            // return;
+            next({
+                message: " category not found",
+                statusCode: 404
+            });
+            return;
+        }
+
+        // categories[index]={
+        //     ...categories[index],
+        //     name
+        // };
+        res.status(200).json({
+            message : "categories updated",
+            success: true,
+            data: updatedCategory
+        });
+    }catch(error){
+        next(error);
     }
-
-    categories[index]={
-        ...categories[index],
-        name
-    };
-    res.status(200).json({
-        message : "categories updated",
-        success: true,
-        data: categories[index]
-    });
 };
 
 //* delete
-export const remove = (req, res, next) =>{
+export const remove = async (req, res, next) =>{
     // res.send("<h1>Products deleted</h1>");
 
-    const {id} = req.params;
+    try{
+        const {id} = req.params;
 
-    const index = categories.findIndex((category)=>category._id === Number(id));
+        // const index = categories.findIndex((category)=>category._id === Number(id));
 
-    if(index === -1){
-        // res.status(404).json({
-        //     message: "category not found",
-        //     success: false,
-        //     data: null
-        // });
-        // return;
-        next({
-            message: " category not found",
-            statusCode: 404
-        })
+        const deletedCategory = await Category.findByIdAndDelete({_id: id});
+
+        if(!deletedCategory){
+            // res.status(404).json({
+            //     message: "category not found",
+            //     success: false,
+            //     data: null
+            // });
+            // return;
+            next({
+                message: " category not found",
+                statusCode: 404
+            });
+            return;
+        }
+        // categories.splice(index,1);
+        res.status(200).json({
+            message : "categories deleted",
+            success: true,
+            data: null
+        });
+    }catch(error){
+        next(error);
     }
-    categories.splice(index,1);
-    res.status(200).json({
-        message : "categories deleted",
-        success: true,
-        data: null
-    });
 };

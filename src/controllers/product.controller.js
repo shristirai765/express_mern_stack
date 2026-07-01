@@ -65,7 +65,7 @@ export const getById = async (req, res, next) =>{
         res.status(200).json({
                 message : `product fetched by {id} `,
                 success: true,
-                data: products
+                data: product
             });
     }catch(error){
         next(error);
