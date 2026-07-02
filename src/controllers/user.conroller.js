@@ -36,7 +36,7 @@ export const getAll = async (req, res, next) =>{
         res.status(200).json({
         message : "all users fetched",
         success: true,
-        data: users,
+        data: user,
         });
     }catch(error){
         next(error);
@@ -71,7 +71,7 @@ export const getById = async (req, res, next) =>{
         res.status(200).json({
                 message : `user fetched by {id} `,
                 success: true,
-                data: users
+                data: user
             })
     }catch (error){
         next(error);
